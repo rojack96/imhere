@@ -1,13 +1,14 @@
-from imhere.delogger.delogger import Delogger
+from imhere.imhere import ImHere
 
 
 def example():
-   Delogger.return_name()
-   Delogger.return_name()
-   Delogger.return_name()
+   
+   ImHere.return_name()
+   ImHere.return_name()
+   ImHere.return_name()
 
 def pippo():
-   Delogger.return_name()
+   ImHere.return_name()
 
 if __name__ == "__main__":
     example()
