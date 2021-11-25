@@ -1,15 +1,17 @@
-from imhere.imhere import ImHere
+from imhere.imhere import ImHere, Separator
+
+imhhere = ImHere(
+   separator=Separator.UNDERSCORE, 
+   timestamp=True, 
+   time_format="%Y-%m-%d %H:%M:%S"
+   )
+
+class TestCase:
+   def function_for_test():
+      # print(imhhere.now)
+      variabile_con_bel_nome = ["cinque",2]
+      imhhere.log(variabile_con_bel_nome)
 
 
-# def example():
-   # ImHere.log("")
-   # ImHere.log("")
-   # ImHere.log("")
-
-def pippo():
-   ciccio = "cinque"
-   ImHere.log(ciccio)
-
-if __name__ == "__main__":
-   #  example()
-    pippo()
+   if __name__ == "__main__":
+      function_for_test()
