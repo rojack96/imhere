@@ -1,15 +1,15 @@
 from imhere.imhere import ImHere
 
 
-def example():
-   
-   ImHere.return_name()
-   ImHere.return_name()
-   ImHere.return_name()
+# def example():
+   # ImHere.log("")
+   # ImHere.log("")
+   # ImHere.log("")
 
 def pippo():
-   ImHere.return_name()
+   ciccio = "cinque"
+   ImHere.log(ciccio)
 
 if __name__ == "__main__":
-    example()
+   #  example()
     pippo()
