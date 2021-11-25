@@ -8,7 +8,6 @@ imhhere = ImHere(
 
 class TestCase:
    def function_for_test():
-      # print(imhhere.now)
       variabile_con_bel_nome = ["cinque",2]
       imhhere.log(variabile_con_bel_nome)
 
