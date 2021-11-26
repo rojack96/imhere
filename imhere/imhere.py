@@ -21,7 +21,7 @@ class ImHere:
         time_format:str="%Y-%m-%d %H:%M:%S"
     ) -> None:
         self.__separator = separator
-        self.__now = datetime.now().strftime(time_format)
+        self.__time_format = time_format
         self.__template_value  = "[{ts}] {file_name}{spr}{context}{spr}line {line_number}{spr}{var_name}:{var_content}" if timestamp else "{file_name}{spr}{context}{spr}line {line_number}{spr}{var_name}:{var_content}"
         self.__template_no_value = "[{ts}] {file_name}{spr}{context}{spr}line {line_number}" if timestamp else "{file_name}{spr}{context}{spr}line {line_number}"
         pass
@@ -30,13 +30,15 @@ class ImHere:
         file_name = inspect.stack()[1][1]
         context = inspect.stack()[1][3]
         line_number = str(inspect.stack()[1][2])
+        now = datetime.now().strftime(self.__time_format)
 
         if var is not None:
+            
             var_name:str = inspect.stack()[1][4][0].split("log(")[1].replace(")\n", "")
             var_content = var
 
             template_result = self.__template_value.format(
-                ts=self.__now,
+                ts=now,
                 spr=self.__separator.value,
                 file_name=file_name,
                 context=context,
@@ -46,7 +48,7 @@ class ImHere:
             )
         else:
             template_result = self.__template_no_value.format(
-                ts=self.__now,
+                ts=now,
                 spr=self.__separator.value,
                 file_name=file_name,
                 context=context,
