@@ -11,13 +11,13 @@ class Separator(Enum):
     VERTICAL_BAR = '|'
     HYPHEN = '-'
     UNDERSCORE = '_'
+    ARROW = '->'
 
 
 class ImHere:
-    
     def __init__(
         self, separator: Separator = Separator.BACKSLASH, 
-        timestamp: bool = True, 
+        timestamp: bool = True,
         time_format:str="%Y-%m-%d %H:%M:%S"
     ) -> None:
         self.__separator = separator
@@ -91,5 +91,3 @@ class ImHere:
                     indent=2
                 )
             )
-        
-
