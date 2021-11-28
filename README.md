@@ -55,7 +55,6 @@ HYPHEN = '-'
 UNDERSCORE = '_'
 ARROW = '->'
 ```
-
-Se si vuole disattivare il timestamp settarlo a `False`
-Se si vuole cambiare il formato del timestamp si può farlo tramite `time_format`
+To disable the timestamp print, set `timestamp=False`
+To change format timestamp, set `time_format=formatTimestamp`
 
