@@ -1,6 +1,8 @@
 import inspect
 from datetime import datetime
 from enum import Enum
+import json
+
 
 class Separator(Enum):
     SLASH = '/'
@@ -9,13 +11,17 @@ class Separator(Enum):
     VERTICAL_BAR = '|'
     HYPHEN = '-'
     UNDERSCORE = '_'
+    ARROW = '->'
 
 
 class ImHere:
-    
-    def __init__(self, separator: Separator = Separator.BACKSLASH, timestamp: bool = True, time_format:str="%Y-%m-%d %H:%M:%S") -> None:
+    def __init__(
+        self, separator: Separator = Separator.BACKSLASH, 
+        timestamp: bool = True,
+        time_format:str="%Y-%m-%d %H:%M:%S"
+    ) -> None:
         self.__separator = separator
-        self.__now = datetime.now().strftime(time_format)
+        self.__time_format = time_format
         self.__template_value  = "[{ts}] {file_name}{spr}{context}{spr}line {line_number}{spr}{var_name}:{var_content}" if timestamp else "{file_name}{spr}{context}{spr}line {line_number}{spr}{var_name}:{var_content}"
         self.__template_no_value = "[{ts}] {file_name}{spr}{context}{spr}line {line_number}" if timestamp else "{file_name}{spr}{context}{spr}line {line_number}"
         pass
@@ -24,13 +30,15 @@ class ImHere:
         file_name = inspect.stack()[1][1]
         context = inspect.stack()[1][3]
         line_number = str(inspect.stack()[1][2])
+        now = datetime.now().strftime(self.__time_format)
 
         if var is not None:
+            
             var_name:str = inspect.stack()[1][4][0].split("log(")[1].replace(")\n", "")
             var_content = var
 
             template_result = self.__template_value.format(
-                ts=self.__now,
+                ts=now,
                 spr=self.__separator.value,
                 file_name=file_name,
                 context=context,
@@ -40,7 +48,7 @@ class ImHere:
             )
         else:
             template_result = self.__template_no_value.format(
-                ts=self.__now,
+                ts=now,
                 spr=self.__separator.value,
                 file_name=file_name,
                 context=context,
@@ -53,29 +61,33 @@ class ImHere:
         file_name = inspect.stack()[1][1]
         context = inspect.stack()[1][3]
         line_number = str(inspect.stack()[1][2])
-
+        
         if var is not None:
             var_name:str = inspect.stack()[1][4][0].split("log(")[1].replace(")\n", "")
             var_content = var
-
+            
             return print(
-                {
-                    "file": file_name,
-                    "context": context,
-                    "line": line_number,
-                    "variable":{
-                        "name": var_name,
-                        "content": var_content
-                    }
-                }
+                json.dumps(
+                    {
+                        "FILE_NAME": file_name,
+                        "CONTEXT": context,
+                        "LINE": line_number,
+                        "VARIABLE":{
+                            "NAME": var_name,
+                            "CONTENT": var_content
+                        }
+                    },
+                    indent=2
+                )
             )
         else:
             return print(
-                {
-                    "file": file_name,
-                    "context": context,
-                    "line": line_number,
-                }
+                json.dumps(
+                    {
+                        "FILE_NAME": file_name,
+                        "CONTEXT": context,
+                        "LINE": line_number,
+                    },
+                    indent=2
+                )
             )
-        
-
