@@ -26,7 +26,7 @@ def function():
 #[2021-11-26 19:44:50] test.py\function\line 6\variable:97
 ```
 
-È possibile cambiare alcune impostazioni
+Change default settings
 
 ```python
 from imhere.imhere import ImHere, Separator
@@ -44,7 +44,7 @@ def function():
 #[21-11-26 19:44:50] test.py->function->line 6->variable:97
 ```
 
-Tra le impostazioni del Separator abbiamo:
+Settings Separator:
 
 ```python
 SLASH = '/'
@@ -56,5 +56,6 @@ UNDERSCORE = '_'
 ARROW = '->'
 ```
 To disable the timestamp print, set `timestamp=False`
+
 To change format timestamp, set `time_format=formatTimestamp`
 
