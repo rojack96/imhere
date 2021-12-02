@@ -51,19 +51,19 @@ class ImHere:
         FILE_NAME = inspect.stack()[1][1]
         CONTEXT = inspect.stack()[1][3]
         LINE_NUMBER = str(inspect.stack()[1][2])
-        var_name:str = inspect.stack()[1][4][0].split("log(")[1].replace(")\n", "")
-        var_content = var
-        JSON_PRINT = {
+        JSON_FORMAT = {
                         "FILE_NAME": FILE_NAME,
                         "CONTEXT": CONTEXT,
                         "LINE": LINE_NUMBER,
-                        "VARIABLE":{
+                    }
+        
+        if var is None:
+            return print(json.dumps(JSON_FORMAT,indent=2))
+        else:
+            var_name:str = inspect.stack()[1][4][0].split("log(")[1].replace(")\n", "")
+            var_content = var
+            JSON_FORMAT["VARIABLE"] = {
                             "NAME": var_name,
                             "CONTENT": var_content
                         }
-                    }
-        
-        if var is not None:
-            return print(json.dumps(JSON_PRINT,indent=2))
-        else:
-            return print(json.dumps({key: JSON_PRINT[key] for key in ['FILE_NAME','CONTEXT','LINE']},indent=2))
+            return print(json.dumps(JSON_FORMAT,indent=2))
