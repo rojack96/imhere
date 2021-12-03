@@ -15,7 +15,7 @@ Return print with:
 ## Get started
 
 ```python
-from imhere.imhere import ImHere
+from imhere import ImHere
 
 imhere = ImHere()
 

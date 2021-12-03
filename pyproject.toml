@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "imhere"
-version = "0.1.6"
+version = "0.1.7"
 description = "ImHere, simple log for simple debug"
 authors = ["rojack96 <cerroberto96@gmail.com>"]
 readme = "README.md"
