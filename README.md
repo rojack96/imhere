@@ -29,10 +29,10 @@ def function():
 Change default settings
 
 ```python
-from imhere.imhere import ImHere, Separator
+from imhere import ImHere, separator
 
 imhere = ImHere(
-   separator=Separator.ARROW, 
+   spr=separator.ARROW, 
    timestamp=True, 
    time_format="%y-%m-%d %H:%M:%S"
 )
@@ -44,7 +44,7 @@ def function():
 #[21-11-26 19:44:50] test.py->function->line 6->variable:97
 ```
 
-Settings Separator:
+Settings `separator`:
 
 ```python
 SLASH = '/'
