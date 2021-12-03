@@ -1,2 +1,2 @@
 from imhere.imhere import ImHere
-from imhere.utils import Separator
+from imhere.utils import separator

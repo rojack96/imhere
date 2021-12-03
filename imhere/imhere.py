@@ -1,16 +1,15 @@
 import inspect
 from datetime import datetime
 import json
-from typing import Dict
-from imhere.utils import Separator, templates
+from imhere.utils import separator, templates
 
 class ImHere:
     def __init__(
-        self, separator: Separator = Separator.BACKSLASH, 
+        self, spr: separator = separator.BACKSLASH, 
         timestamp: bool = True,
         time_format:str="%Y-%m-%d %H:%M:%S"
     ) -> None:
-        self.__separator:Separator = separator
+        self.__spr:separator = spr
         self.__time_format:str = time_format
         self.__template_value:str  = templates.VALUE_TS if timestamp else templates.VALUE_NO_TS
         self.__template_no_value:str = templates.NO_VALUE if timestamp else templates.NO_VALUE_NO_TS
@@ -29,7 +28,7 @@ class ImHere:
 
             template_result = self.__template_value.format(
                 ts=NOW,
-                spr=self.__separator.value,
+                spr=self.__spr.value,
                 file_name=FILE_NAME,
                 context=CONTEXT,
                 line_number=LINE_NUMBER,
@@ -39,7 +38,7 @@ class ImHere:
         else:
             template_result = self.__template_no_value.format(
                 ts=NOW,
-                spr=self.__separator.value,
+                spr=self.__spr.value,
                 file_name=FILE_NAME,
                 context=CONTEXT,
                 line_number=LINE_NUMBER
