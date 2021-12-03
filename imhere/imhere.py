@@ -9,6 +9,7 @@ class ImHere:
         timestamp: bool = True,
         time_format:str="%Y-%m-%d %H:%M:%S"
     ) -> None:
+    
         self.__spr:separator = spr
         self.__time_format:str = time_format
         self.__template_value:str  = templates.VALUE_TS if timestamp else templates.VALUE_NO_TS
@@ -22,10 +23,8 @@ class ImHere:
         NOW = datetime.now().strftime(self.__time_format)
 
         if var is not None:
-            
             var_name:str = inspect.stack()[1][4][0].split("log(")[1].replace(")\n", "")
             var_content = var
-
             template_result = self.__template_value.format(
                 ts=NOW,
                 spr=self.__spr.value,
@@ -43,7 +42,6 @@ class ImHere:
                 context=CONTEXT,
                 line_number=LINE_NUMBER
             )
-
         return print(template_result)
 
     def json_log(self, var=None):
