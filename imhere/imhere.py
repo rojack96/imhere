@@ -2,7 +2,7 @@ import inspect
 import json
 from datetime import datetime
 
-from imhere.utils import separator, templates
+from imhere.utils import separator, templates, InfoBuilder
 
 class ImHere:
     def __init__(
@@ -17,51 +17,65 @@ class ImHere:
         self.__template_no_value:str = templates.NO_VALUE if timestamp else templates.NO_VALUE_NO_TS
         pass
 
-    def log(self, var=None):
-        FILE_NAME = inspect.stack()[1][1]
-        CONTEXT = inspect.stack()[1][3]
-        LINE_NUMBER = str(inspect.stack()[1][2])
-        NOW = datetime.now().strftime(self.__time_format)
+    def __info_builder(self) -> InfoBuilder:
 
-        if var is not None:
-            var_name:str = inspect.stack()[1][4][0].split("log(")[1].replace(")\n", "")
-            var_content = var
+        instack = inspect.stack()[2]
+
+        info = InfoBuilder(
+            file_name = instack.filename,
+            context = instack.function,
+            line_number = str(instack.lineno),
+            var_name = instack.code_context[0].split("log(")[1].replace(")\n", ""),
+            timestamp = datetime.now().strftime(self.__time_format)
+        )
+        return info
+
+    def log(self, variable=None):
+
+        info: InfoBuilder = self.__info_builder()
+        
+        NOW = info.timestamp
+
+        if variable:
+            var_name:str = info.var_name
+            var_content = variable
+
             template_result = self.__template_value.format(
-                ts=NOW,
-                spr=self.__spr.value,
-                file_name=FILE_NAME,
-                context=CONTEXT,
-                line_number=LINE_NUMBER,
-                var_name=var_name,
-                var_content=var_content
+                ts = info.timestamp,
+                spr = self.__spr.value,
+                file_name = info.file_name,
+                context = info.context,
+                line_number = info.line_number,
+                var_name = var_name,
+                var_content = var_content
             )
         else:
             template_result = self.__template_no_value.format(
-                ts=NOW,
-                spr=self.__spr.value,
-                file_name=FILE_NAME,
-                context=CONTEXT,
-                line_number=LINE_NUMBER
+                ts = info.timestamp,                
+                spr = self.__spr.value,
+                file_name = info.file_name,
+                context = info.context,
+                line_number = info.line_number
             )
         return print(template_result)
 
-    def json_log(self, var=None):
-        FILE_NAME = inspect.stack()[1][1]
-        CONTEXT = inspect.stack()[1][3]
-        LINE_NUMBER = str(inspect.stack()[1][2])
+    def json_log(self, variable=None):
+
+        info: InfoBuilder = self.__info_builder()
+        
         JSON_FORMAT = {
-                        "FILE_NAME": FILE_NAME,
-                        "CONTEXT": CONTEXT,
-                        "LINE": LINE_NUMBER,
+                        "FILE_NAME": info.file_name,
+                        "CONTEXT": info.context,
+                        "LINE": info.line_number,
                     }
         
-        if var is None:
-            return print(json.dumps(JSON_FORMAT,indent=2))
-        else:
-            var_name:str = inspect.stack()[1][4][0].split("log(")[1].replace(")\n", "")
-            var_content = var
+        if variable:
+            var_name:str = info.var_name
+            var_content = variable
+
             JSON_FORMAT["VARIABLE"] = {
                             "NAME": var_name,
                             "CONTENT": var_content
                         }
             return print(json.dumps(JSON_FORMAT,indent=2))
+        return print(json.dumps(JSON_FORMAT,indent=2))
