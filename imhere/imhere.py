@@ -17,9 +17,25 @@ class ImHere:
         self.__template_no_value:str = templates.NO_VALUE if timestamp else templates.NO_VALUE_NO_TS
         pass
 
+    def log(self, variable=None):
+        try:
+            if variable:
+                return self.__log_formatter(variable)
+            return self.__log_formatter()
+        except Exception as e:
+            return e
+
+    def json_log(self, variable=None):
+        try:
+            if variable:    
+                return self.__log_formatter(variable,True)
+            return self.__log_formatter(None,True)
+        except Exception as e:
+            return e
+
     def __info_builder(self) -> InfoBuilder:
 
-        instack = inspect.stack()[2]
+        instack = inspect.stack()[3]
 
         info = InfoBuilder(
             file_name = instack.filename,
@@ -30,52 +46,50 @@ class ImHere:
         )
         return info
 
-    def log(self, variable=None):
+    def __log_formatter(self, variable=None, json_log: bool = False):
 
         info: InfoBuilder = self.__info_builder()
-        
-        NOW = info.timestamp
 
-        if variable:
-            var_name:str = info.var_name
-            var_content = variable
-
-            template_result = self.__template_value.format(
-                ts = info.timestamp,
-                spr = self.__spr.value,
-                file_name = info.file_name,
-                context = info.context,
-                line_number = info.line_number,
-                var_name = var_name,
-                var_content = var_content
-            )
-        else:
-            template_result = self.__template_no_value.format(
-                ts = info.timestamp,                
-                spr = self.__spr.value,
-                file_name = info.file_name,
-                context = info.context,
-                line_number = info.line_number
-            )
-        return print(template_result)
-
-    def json_log(self, variable=None):
-
-        info: InfoBuilder = self.__info_builder()
-        
-        JSON_FORMAT = {
+        JSON_FORMAT_BASE = {
                         "FILE_NAME": info.file_name,
                         "CONTEXT": info.context,
                         "LINE": info.line_number,
                     }
-        
+
         if variable:
             var_name:str = info.var_name
             var_content = variable
 
-            JSON_FORMAT["VARIABLE"] = {
+            if json_log:
+                template_result = JSON_FORMAT_BASE 
+                template_result["VARIABLE"] = {
                             "NAME": var_name,
                             "CONTENT": var_content
                         }
-            return print(json.dumps(JSON_FORMAT,indent=2))
-        return print(json.dumps(JSON_FORMAT,indent=2))
+                template_result = json.dumps(template_result, indent=2)
+            else:
+                template_result = self.__template_value.format(
+                    ts = info.timestamp,
+                    spr = self.__spr.value,
+                    file_name = info.file_name,
+                    context = info.context,
+                    line_number = info.line_number,
+                    var_name = var_name,
+                    var_content = var_content
+                )
+        else:
+            if json_log:
+                template_result = json.dumps(JSON_FORMAT_BASE,indent=2)
+            else:    
+                template_result = self.__template_no_value.format(
+                    ts = info.timestamp,                
+                    spr = self.__spr.value,
+                    file_name = info.file_name,
+                    context = info.context,
+                    line_number = info.line_number
+                )
+        
+        return print(template_result)
+        
+
+    
