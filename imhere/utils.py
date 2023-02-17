@@ -3,7 +3,7 @@ from enum import Enum
 class spr(Enum):
     SLASH:str = '/'
     BACKSLASH:str = '\\'
-    POINT:str = '.'
+    DOT:str = '.'
     VERTICAL_BAR:str = '|'
     HYPHEN:str = '-'
     UNDERSCORE:str = '_'
