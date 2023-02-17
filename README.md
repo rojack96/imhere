@@ -23,7 +23,7 @@ def function():
     variable = 97
     imhere.log(variable)
 
-#[2021-11-26 19:44:50] test.py\function\line 6\variable:97
+#[2023-02-17 08:30:50] test.py/function/line 6/variable:97
 ```
 
 Change default settings
@@ -41,7 +41,7 @@ def function():
     variable = 97
     imhere.log(variable)
 
-#[21-11-26 19:44:50] test.py->function->line 6->variable:97
+#[2023-02-17 08:30:50] test.py->function->line 6->variable:97
 ```
 
 Settings `separator`:

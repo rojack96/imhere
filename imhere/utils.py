@@ -1,6 +1,6 @@
 from enum import Enum
 
-class separator(Enum):
+class spr(Enum):
     SLASH:str = '/'
     BACKSLASH:str = '\\'
     POINT:str = '.'
@@ -8,12 +8,6 @@ class separator(Enum):
     HYPHEN:str = '-'
     UNDERSCORE:str = '_'
     ARROW:str = '->'
-
-class templates:
-    VALUE_TS:str = "[{ts}] {file_name}{spr}{context}{spr}line {line_number}{spr}{var_name}:{var_content}"
-    VALUE_NO_TS:str ="{file_name}{spr}{context}{spr}line {line_number}{spr}{var_name}:{var_content}"
-    NO_VALUE:str = "[{ts}] {file_name}{spr}{context}{spr}line {line_number}"
-    NO_VALUE_NO_TS:str = "{file_name}{spr}{context}{spr}line {line_number}"
 
 class InfoBuilder:
     def __init__(self, file_name: str, context: str, line_number: str, var_name: str, timestamp: str):

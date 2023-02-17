@@ -2,22 +2,35 @@ import inspect
 import json
 from datetime import datetime
 
-from imhere.utils import separator, templates, InfoBuilder
+from imhere.utils import spr, InfoBuilder
 
 class ImHere:
+    """
+    ImHere is an alternative of a simple print for debugging.
+    """
     def __init__(
-        self, spr: separator = separator.BACKSLASH, 
+        self, 
+        separator: spr = spr.SLASH, 
         timestamp: bool = True,
-        time_format:str="%Y-%m-%d %H:%M:%S"
+        time_format:str="%Y-%m-%d %H:%M:%S",
+        json_indent: bool = False,
+        indent_space: int = 2,
+        template: str = "[{ts}] {file_name}{spr}{context}{spr}line {line_number}{spr}{var_name}:{var_content}"
     ) -> None:
     
-        self.__spr:separator = spr
+        self.__separator:spr = separator
         self.__time_format:str = time_format
-        self.__template_value:str  = templates.VALUE_TS if timestamp else templates.VALUE_NO_TS
-        self.__template_no_value:str = templates.NO_VALUE if timestamp else templates.NO_VALUE_NO_TS
+        self.__template:str  = template if timestamp else template.replace("[{ts}] ", "")
+        self.__json_indent: bool = json_indent
+        self.__indent_space: int = indent_space
         pass
 
     def log(self, variable=None):
+        """
+        log(variable) return a log in this format:
+
+        [2023-02-17 08:30:50] test.py/function/line 6/variable:97
+        """
         try:
             if variable:
                 return self.__log_formatter(variable)
@@ -26,6 +39,19 @@ class ImHere:
             return e
 
     def json_log(self, variable=None):
+        """
+        json_log(variable) return a log in this format:
+
+        {
+            "FILE_NAME": "/test.py",
+            "CONTEXT": "function",
+            "LINE": "6",
+            "VARIABLE": {
+                "NAME": "variable",
+                "CONTENT": 97
+            }
+        }
+        """
         try:
             if variable:    
                 return self.__log_formatter(variable,True)
@@ -37,17 +63,20 @@ class ImHere:
 
         instack = inspect.stack()[3]
 
+        _, _, after = instack.code_context[0].partition("log(")
+        variable_name, _, _ = after.partition(")")
+
         info = InfoBuilder(
             file_name = instack.filename,
             context = instack.function,
-            line_number = str(instack.lineno),
-            var_name = instack.code_context[0].split("log(")[1].replace(")\n", ""),
+            line_number = instack.lineno,
+            var_name= variable_name,
             timestamp = datetime.now().strftime(self.__time_format)
         )
         return info
 
     def __log_formatter(self, variable=None, json_log: bool = False):
-
+        indent:int = self.__indent_space if self.__json_indent else None
         info: InfoBuilder = self.__info_builder()
 
         JSON_FORMAT_BASE = {
@@ -61,16 +90,16 @@ class ImHere:
             var_content = variable
 
             if json_log:
-                template_result = JSON_FORMAT_BASE 
-                template_result["VARIABLE"] = {
+                result = JSON_FORMAT_BASE 
+                result["VARIABLE"] = {
                             "NAME": var_name,
                             "CONTENT": var_content
                         }
-                template_result = json.dumps(template_result, indent=2)
+                result = json.dumps(result, indent=indent)
             else:
-                template_result = self.__template_value.format(
+                result = self.__template.format(
                     ts = info.timestamp,
-                    spr = self.__spr.value,
+                    spr = self.__separator.value,
                     file_name = info.file_name,
                     context = info.context,
                     line_number = info.line_number,
@@ -79,17 +108,19 @@ class ImHere:
                 )
         else:
             if json_log:
-                template_result = json.dumps(JSON_FORMAT_BASE,indent=2)
-            else:    
-                template_result = self.__template_no_value.format(
+                result = json.dumps(JSON_FORMAT_BASE,indent=indent)
+            else:
+                template_value = self.__template.replace("{spr}{var_name}:{var_content}", "")    
+                
+                result = template_value.format(
                     ts = info.timestamp,                
-                    spr = self.__spr.value,
+                    spr = self.__separator.value,
                     file_name = info.file_name,
                     context = info.context,
                     line_number = info.line_number
                 )
         
-        return print(template_result)
+        return print(result)
         
 
     
